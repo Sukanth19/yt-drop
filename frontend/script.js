@@ -1,28 +1,27 @@
 // ─── Config ────────────────────────────────────────────────
 // This is where your Python backend is running
-const API_BASE = "http://localhost:8000";
+const API_BASE = "https://yt-downloader-production-bd10.up.railway.app";
 
 // ─── Grab all the elements we need ────────────────────────
-const urlInput      = document.getElementById("url-input");
-const previewBtn    = document.getElementById("preview-btn");
-const previewBox    = document.getElementById("preview-box");
-const previewThumb  = document.getElementById("preview-thumb");
-const previewTitle  = document.getElementById("preview-title");
+const urlInput = document.getElementById("url-input");
+const previewBtn = document.getElementById("preview-btn");
+const previewBox = document.getElementById("preview-box");
+const previewThumb = document.getElementById("preview-thumb");
+const previewTitle = document.getElementById("preview-title");
 const previewUpload = document.getElementById("preview-uploader");
-const previewDur    = document.getElementById("preview-duration");
-const downloadBtn   = document.getElementById("download-btn");
-const btnLabel      = document.getElementById("btn-label");
-const statusEl      = document.getElementById("status");
-const statusText    = document.getElementById("status-text");
-const spinner       = document.getElementById("spinner");
-const qualityGroup  = document.getElementById("quality-group");
+const previewDur = document.getElementById("preview-duration");
+const downloadBtn = document.getElementById("download-btn");
+const btnLabel = document.getElementById("btn-label");
+const statusEl = document.getElementById("status");
+const statusText = document.getElementById("status-text");
+const spinner = document.getElementById("spinner");
+const qualityGroup = document.getElementById("quality-group");
 const qualitySelect = document.getElementById("quality-select");
-const fmtMp4        = document.getElementById("fmt-mp4");
-const fmtMp3        = document.getElementById("fmt-mp3");
+const fmtMp4 = document.getElementById("fmt-mp4");
+const fmtMp3 = document.getElementById("fmt-mp3");
 
 // ─── State ─────────────────────────────────────────────────
 let selectedFormat = "mp4"; // default
-
 
 // ─── Format Toggle (MP4 / MP3) ─────────────────────────────
 fmtMp4.addEventListener("click", () => {
@@ -39,17 +38,16 @@ fmtMp3.addEventListener("click", () => {
   qualityGroup.style.display = "none"; // hide quality for audio
 });
 
-
 // ─── Helper: Format seconds into mm:ss or hh:mm:ss ─────────
 function formatDuration(seconds) {
   if (!seconds) return "Unknown duration";
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
-  if (h > 0) return `${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-  return `${m}:${String(s).padStart(2,"0")}`;
+  if (h > 0)
+    return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
 }
-
 
 // ─── Helper: Show status message ───────────────────────────
 function showStatus(message, type = "loading") {
@@ -63,7 +61,7 @@ function showStatus(message, type = "loading") {
     spinner.classList.add("hidden");
   }
 
-  if (type === "error")   statusEl.classList.add("error");
+  if (type === "error") statusEl.classList.add("error");
   if (type === "success") statusEl.classList.add("success");
 
   statusText.textContent = message;
@@ -72,7 +70,6 @@ function showStatus(message, type = "loading") {
 function hideStatus() {
   statusEl.classList.add("hidden");
 }
-
 
 // ─── Preview Button — fetch video info ─────────────────────
 previewBtn.addEventListener("click", async () => {
@@ -94,28 +91,25 @@ previewBtn.addEventListener("click", async () => {
     if (!res.ok) throw new Error(data.detail || "Failed to fetch info");
 
     // Populate the preview card
-    previewThumb.src        = data.thumbnail;
-    previewTitle.textContent   = data.title;
-    previewUpload.textContent  = data.uploader;
-    previewDur.textContent     = formatDuration(data.duration);
+    previewThumb.src = data.thumbnail;
+    previewTitle.textContent = data.title;
+    previewUpload.textContent = data.uploader;
+    previewDur.textContent = formatDuration(data.duration);
 
     previewBox.classList.remove("hidden");
     hideStatus();
 
     // Re-init lucide icons (thumbnail area is new DOM)
     lucide.createIcons();
-
   } catch (err) {
     showStatus(`Error: ${err.message}`, "error");
   }
 });
 
-
 // ─── Allow pressing Enter in the input to trigger preview ──
 urlInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") previewBtn.click();
 });
-
 
 // ─── Download Button ────────────────────────────────────────
 downloadBtn.addEventListener("click", async () => {
@@ -139,8 +133,8 @@ downloadBtn.addEventListener("click", async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        url:     url,
-        format:  selectedFormat,
+        url: url,
+        format: selectedFormat,
         quality: quality,
       }),
     });
@@ -173,7 +167,6 @@ downloadBtn.addEventListener("click", async () => {
     URL.revokeObjectURL(a.href);
 
     showStatus(`✓ Downloaded: ${filename}`, "success");
-
   } catch (err) {
     showStatus(`Error: ${err.message}`, "error");
   } finally {
