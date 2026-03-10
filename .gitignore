@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+env/
+
+# Downloads temp folder
+backend/downloads/
+
+# VSCode
+.vscode/
+
+# OS
+.DS_Store
+*.log
