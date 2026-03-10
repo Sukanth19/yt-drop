@@ -36,6 +36,7 @@ def download_video(url: str, format: str, quality: str) -> str:
     opts = {
         "outtmpl": f"{output_path}/%(title)s.%(ext)s",
         "quiet": True,
+        "ffmpeg_location": "/usr/bin/ffmpeg",  # explicit ffmpeg path
     }
 
     if cookie_file:
@@ -49,11 +50,11 @@ def download_video(url: str, format: str, quality: str) -> str:
             "preferredquality": "192",
         }]
     else:
+        # Use a single format that doesn't need merging
         if quality == "best":
-            opts["format"] = "bestvideo+bestaudio/best"
+            opts["format"] = "best"
         else:
-            opts["format"] = f"bestvideo[height<={quality}]+bestaudio/best"
-        opts["merge_output_format"] = "mp4"
+            opts["format"] = f"best[height<={quality}]"
 
     with yt_dlp.YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=True)
